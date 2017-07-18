@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns2="www.tibco.com/plugin/Sleep" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType">
+    <pd:name>Level3Server/RefreshLog_ClickReport.process</pd:name>
+    <pd:startName>Timer</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="Timer">
+        <pd:type>com.tibco.plugin.timer.TimerEventSource</pd:type>
+        <pd:resourceType>ae.activities.timer</pd:resourceType>
+        <pd:x>47</pd:x>
+        <pd:y>42</pd:y>
+        <config>
+            <StartTime>1474905550000</StartTime>
+            <Frequency>false</Frequency>
+            <TimeInterval>1</TimeInterval>
+            <FrequencyIndex>Hour</FrequencyIndex>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>736</pd:endX>
+    <pd:endY>149</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1474901893900</pd:targetNamespace>
+    <pd:activity name="Rename File">
+        <pd:type>com.tibco.plugin.file.FileRenameActivity</pd:type>
+        <pd:resourceType>ae.activities.FileRenameActivity</pd:resourceType>
+        <pd:x>387</pd:x>
+        <pd:y>35</pd:y>
+        <config>
+            <createMissingDirectories>true</createMissingDirectories>
+            <overwrite>false</overwrite>
+        </config>
+        <pd:inputBindings>
+            <ns:RenameActivityConfig>
+                <fromFileName>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/Log/ClickLog"/>
+                </fromFileName>
+                <toFileName>
+                    <xsl:value-of select="$Map-Data/root/param"/>
+                </toFileName>
+            </ns:RenameActivityConfig>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Create File">
+        <pd:type>com.tibco.plugin.file.FileCreateActivity</pd:type>
+        <pd:resourceType>ae.activities.FileCreateActivity</pd:resourceType>
+        <pd:x>601</pd:x>
+        <pd:y>36</pd:y>
+        <config>
+            <overwrite>false</overwrite>
+            <createMissingDirectories>true</createMissingDirectories>
+        </config>
+        <pd:inputBindings>
+            <ns:CreateActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/Log/ClickLog"/>
+                </fileName>
+            </ns:CreateActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="External Command">
+        <pd:type>com.tibco.plugin.cmdexec.CmdExecActivity</pd:type>
+        <pd:resourceType>ae.activities.CmdExecActivity</pd:resourceType>
+        <pd:x>606</pd:x>
+        <pd:y>150</pd:y>
+        <config>
+            <outputToString>true</outputToString>
+            <lineSplit>None</lineSplit>
+        </config>
+        <pd:inputBindings>
+            <CmdInput>
+                <command>
+                    <xsl:value-of select="concat(&quot;python click_report.py &quot;,substring-after($Rename-File/ns:RenameActivityOutput/fileInfo/fullName, &quot;\log\&quot;))"/>
+                </command>
+                <workingDirectory>
+                    <xsl:value-of select="&quot;E:\SoftWares\Project\log\&quot;"/>
+                </workingDirectory>
+            </CmdInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>871</pd:x>
+        <pd:y>47</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="SendAlertMail">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>739</pd:x>
+        <pd:y>42</pd:y>
+        <config>
+            <processName>/Level2Server/SendAlertMail.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <subjectandcontent>
+                    <xsl:value-of select="concat(&#xA;&quot; Hour  refresh log error : &#xA; &quot;,&#xA;$Catch/exceptiondata/*&#xA;)"/>
+                </subjectandcontent>
+                <subject>
+                    <xsl:value-of select="&quot;Win Hour Refresh Log Error&quot;"/>
+                </subject>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Map Data">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>45</pd:x>
+        <pd:y>169</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="param" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <param>
+                    <xsl:value-of select="concat(tib:substring-before-last($_globalVariables/ns1:GlobalVariables/Log/ClickLog,&quot;\&quot;),&quot;\&quot;,substring-before(current-date(), &quot;+&quot;),&quot;\click.log&quot;,&quot;_&quot;,substring-before(current-dateTime(), &quot;:&quot;))"/>
+                </param>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Sleep">
+        <pd:type>com.tibco.plugin.timer.SleepActivity</pd:type>
+        <pd:resourceType>ae.activities.sleep</pd:resourceType>
+        <pd:x>384</pd:x>
+        <pd:y>138</pd:y>
+        <config/>
+        <pd:inputBindings>
+            <ns2:SleepInputSchema>
+                <IntervalInMillisec>
+                    <xsl:value-of select="60000"/>
+                </IntervalInMillisec>
+            </ns2:SleepInputSchema>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="HourLog">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>142</pd:x>
+        <pd:y>38</pd:y>
+        <pd:width>115</pd:width>
+        <pd:height>140</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>errorLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:indexSlot>redisrepeat</pd:indexSlot>
+            <pd:errorCondition>$redisrepeat &gt;3</pd:errorCondition>
+            <pd:suspendAfterErrorRetry>false</pd:suspendAfterErrorRetry>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Redis</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Redis</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Redis">
+            <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+            <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+            <pd:x>191</pd:x>
+            <pd:y>103</pd:y>
+            <config>
+                <fileName>RefreshLog_ClickReportRedis</fileName>
+                <packageName>Level3Server.RefreshLog_ClickReport</packageName>
+                <fullsource>package Level3Server.RefreshLog_ClickReport;
+import java.util.*;
+import java.io.*;
+import com.tm.mc.redis.MCRedisInstance;
+import redis.clients.jedis.Jedis;     
+public class RefreshLog_ClickReportRedis{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String allclickcounter = "";
+	protected String[] allCampCounters = null;
+	protected long clickloglen = 0;
+	public String getallclickcounter() {
+		return allclickcounter;
+	}
+	public void setallclickcounter(String val) {
+		allclickcounter = val;
+	}
+	public String[] getallCampCounters() {
+		return allCampCounters;
+	}
+	public void setallCampCounters(String[] val) {
+		allCampCounters = val;
+	}
+	public long getclickloglen() {
+		return clickloglen;
+	}
+	public void setclickloglen(long val) {
+		clickloglen = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public RefreshLog_ClickReportRedis() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	Out : String allclickcounter
+	Out : String[] allCampCounters
+	Out : long clickloglen
+* Available Variables: DO NOT MODIFY *****/
+// 	 Jedis jedis =  new Jedis("127.0.0.1",6379,100000); 
+//	jedis.auth("!VMD1kult");
+Jedis jedis = MCRedisInstance.getInstance().getJedis();
+//	allclickcounter=jedis.hgetAll("clickCounter").toString();
+//	allCampCounters=allclickcounter.replaceAll("\\{","").replaceAll("\\}","").split(",");
+      //  jedis.del("clickLogList"); 
+	jedis.del("clickLogMap");
+jedis.close();
+	
+}
+}
+</fullsource>
+                <inputData/>
+                <outputData>
+                    <row>
+                        <fieldName>allclickcounter</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>allCampCounters</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>repeating</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>clickloglen</fieldName>
+                        <fieldType>long</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                </outputData>
+                <byteCode>
+                    <class>
+                        <name>RefreshLog_ClickReportRedis</name>
+                        <byteCode>yv66vgAAADQAQAkACwAoCQALACkJAAsAKgoADAArCAAsCgAtAC4KAC0ALwgAMAoAMQAyCgAxADMHADQHADUBAA9hbGxjbGlja2NvdW50ZXIBABJMamF2YS9sYW5nL1N0cmluZzsBAA9hbGxDYW1wQ291bnRlcnMBABNbTGphdmEvbGFuZy9TdHJpbmc7AQALY2xpY2tsb2dsZW4BAAFKAQASZ2V0YWxsY2xpY2tjb3VudGVyAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASc2V0YWxsY2xpY2tjb3VudGVyAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQASZ2V0YWxsQ2FtcENvdW50ZXJzAQAVKClbTGphdmEvbGFuZy9TdHJpbmc7AQASc2V0YWxsQ2FtcENvdW50ZXJzAQAWKFtMamF2YS9sYW5nL1N0cmluZzspVgEADmdldGNsaWNrbG9nbGVuAQADKClKAQAOc2V0Y2xpY2tsb2dsZW4BAAQoSilWAQAGPGluaXQ+AQADKClWAQAGaW52b2tlAQAKRXhjZXB0aW9ucwcANgEAClNvdXJjZUZpbGUBACBSZWZyZXNoTG9nX0NsaWNrUmVwb3J0UmVkaXMuamF2YQwADQAODAAPABAMABEAEgwAIQAiAQAABwA3DAA4ADkMADoAOwEAC2NsaWNrTG9nTWFwBwA8DAA9AD4MAD8AIgEAP0xldmVsM1NlcnZlci9SZWZyZXNoTG9nX0NsaWNrUmVwb3J0L1JlZnJlc2hMb2dfQ2xpY2tSZXBvcnRSZWRpcwEAEGphdmEvbGFuZy9PYmplY3QBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAfY29tL3RtL21jL3JlZGlzL01DUmVkaXNJbnN0YW5jZQEAC2dldEluc3RhbmNlAQAjKClMY29tL3RtL21jL3JlZGlzL01DUmVkaXNJbnN0YW5jZTsBAAhnZXRKZWRpcwEAHSgpTHJlZGlzL2NsaWVudHMvamVkaXMvSmVkaXM7AQAZcmVkaXMvY2xpZW50cy9qZWRpcy9KZWRpcwEAA2RlbAEAJChMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9Mb25nOwEABWNsb3NlACEACwAMAAAAAwAEAA0ADgAAAAQADwAQAAAABAARABIAAAAIAAEAEwAUAAEAFQAAAB0AAQABAAAABSq0AAGwAAAAAQAWAAAABgABAAAADAABABcAGAABABUAAAAiAAIAAgAAAAYqK7UAAbEAAAABABYAAAAKAAIAAAAPAAUAEAABABkAGgABABUAAAAdAAEAAQAAAAUqtAACsAAAAAEAFgAAAAYAAQAAABIAAQAbABwAAQAVAAAAIgACAAIAAAAGKiu1AAKxAAAAAQAWAAAACgACAAAAFQAFABYAAQAdAB4AAQAVAAAAHQACAAEAAAAFKrQAA60AAAABABYAAAAGAAEAAAAYAAEAHwAgAAEAFQAAACIAAwADAAAABioftQADsQAAAAEAFgAAAAoAAgAAABsABQAcAAEAIQAiAAEAFQAAAD0AAwABAAAAFSq3AAQqEgW1AAEqAbUAAioJtQADsQAAAAEAFgAAABYABQAAAB4ABAAIAAoACQAPAAoAFAAfAAEAIwAiAAIAFQAAADcAAgACAAAAE7gABrYAB0wrEgi2AAlXK7YACrEAAAABABYAAAASAAQAAAAoAAcALAAOAC0AEgAvACQAAAAEAAEAJQABACYAAAACACc=</byteCode>
+                    </class>
+                </byteCode>
+            </config>
+            <pd:inputBindings>
+                <javaCodeActivityInput/>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Rename File</pd:from>
+        <pd:to>Create File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Create File</pd:from>
+        <pd:to>External Command</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>SendAlertMail</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendAlertMail</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Timer</pd:from>
+        <pd:to>Map Data</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Sleep</pd:from>
+        <pd:to>Rename File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>External Command</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>HourLog</pd:from>
+        <pd:to>Sleep</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Map Data</pd:from>
+        <pd:to>HourLog</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

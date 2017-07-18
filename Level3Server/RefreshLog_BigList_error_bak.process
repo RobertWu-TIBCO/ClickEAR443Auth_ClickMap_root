@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType">
+    <pd:name>Level3Server/RefreshLog_BigList_error_bak.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>63</pd:startX>
+    <pd:startY>34</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>855</pd:endX>
+    <pd:endY>108</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1474901893900</pd:targetNamespace>
+    <pd:group name="LoopClickLogListToFile_InCaseOfDataSize">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>0</pd:x>
+        <pd:y>102</pd:y>
+        <pd:width>234</pd:width>
+        <pd:height>149</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>repeat</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:indexSlot>index1</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:repeatCondition>$Redis/javaCodeActivityOutput/clicklogend=1</pd:repeatCondition>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Redis</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Write File</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Redis</pd:from>
+            <pd:to>Write File</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Redis">
+            <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+            <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+            <pd:x>47</pd:x>
+            <pd:y>175</pd:y>
+            <config>
+                <fileName>RefreshLog_BigList_error_bakRedis</fileName>
+                <packageName>Level3Server.RefreshLog_BigList_error_bak</packageName>
+                <fullsource>package Level3Server.RefreshLog_BigList_error_bak;
+import java.util.*;
+import java.io.*;
+import redis.clients.jedis.Jedis;     
+public class RefreshLog_BigList_error_bakRedis{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected int in = 0;
+	protected long accuracy = 0;
+	protected String clickLogList = "";
+	protected String log = "";
+	protected Object logobj = null;
+	protected String allclickcounter = "";
+	protected String[] allCampCounters = null;
+	protected int clicklogend = 0;
+	public int getin() {
+		return in;
+	}
+	public void setin(int val) {
+		in = val;
+	}
+	public long getaccuracy() {
+		return accuracy;
+	}
+	public void setaccuracy(long val) {
+		accuracy = val;
+	}
+	public String getclickLogList() {
+		return clickLogList;
+	}
+	public void setclickLogList(String val) {
+		clickLogList = val;
+	}
+	public String getlog() {
+		return log;
+	}
+	public void setlog(String val) {
+		log = val;
+	}
+	public Object getlogobj() {
+		return logobj;
+	}
+	public void setlogobj(Object val) {
+		logobj = val;
+	}
+	public String getallclickcounter() {
+		return allclickcounter;
+	}
+	public void setallclickcounter(String val) {
+		allclickcounter = val;
+	}
+	public String[] getallCampCounters() {
+		return allCampCounters;
+	}
+	public void setallCampCounters(String[] val) {
+		allCampCounters = val;
+	}
+	public int getclicklogend() {
+		return clicklogend;
+	}
+	public void setclicklogend(int val) {
+		clicklogend = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public RefreshLog_BigList_error_bakRedis() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : int in
+	In  : long accuracy
+	In  : String clickLogList
+	Out : String log
+	Out : Object logobj
+	Out : String allclickcounter
+	Out : String[] allCampCounters
+	Out : int clicklogend
+* Available Variables: DO NOT MODIFY *****/
+
+ 	Jedis jedis =  new Jedis("127.0.0.1",6379,100000); 
+ 	jedis.auth("!VMD1kult");
+	long len=jedis.llen(clickLogList);
+	System.out.println(" leng : "+len);
+	if(in*accuracy&lt;len){
+	clicklogend=0;
+	logobj=jedis.lrange(clickLogList, (in-1)*accuracy,in*accuracy-1);
+	jedis.ltrim(clickLogList, in*accuracy-1,-1);
+	}
+	else{
+		logobj=jedis.lrange(clickLogList, (in-1)*accuracy,-1);
+		//allclickcounter=jedis.hgetAll("clickCounter").toString();
+		//allCampCounters=allclickcounter.replaceAll("\\{","").replaceAll("\\}","").split(",");
+		clicklogend=1;
+		jedis.del(clickLogList);
+		//jedis.del("clickLogList"); 
+	}
+	log=logobj.toString();
+	log=log.replaceAll(", 20","20");
+
+//	jedis.disconnect();
+}
+}
+</fullsource>
+                <outputData>
+                    <row>
+                        <fieldName>log</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>logobj</fieldName>
+                        <fieldType>ObjectReference</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>allclickcounter</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>allCampCounters</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>repeating</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>clicklogend</fieldName>
+                        <fieldType>int</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                </outputData>
+                <inputData>
+                    <row>
+                        <fieldName>in</fieldName>
+                        <fieldType>int</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>accuracy</fieldName>
+                        <fieldType>long</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>clickLogList</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                </inputData>
+                <byteCode>
+                    <class>
+                        <name>RefreshLog_BigList_error_bakRedis</name>
+                        <byteCode>yv66vgAAADQAlgkAJQBZCQAlAFoJACUAWwkAJQBcCQAlAF0JACUAXgkAJQBfCQAlAGAKACYAYQgAYgcAYwgAZAMAAYagCgALAGUIAGYKAAsAZwoACwBoCgBpAGoJAGsAbAcAbQoAFABhCABuCgAUAG8KABQAcAoAFABxCgByAHMKAAsAdAX//////////woACwB1BwB2CgALAHcKACYAcQgAeAgAeQoAHwB6BwB7BwB8AQACaW4BAAFJAQAIYWNjdXJhY3kBAAFKAQAMY2xpY2tMb2dMaXN0AQASTGphdmEvbGFuZy9TdHJpbmc7AQADbG9nAQAGbG9nb2JqAQASTGphdmEvbGFuZy9PYmplY3Q7AQAPYWxsY2xpY2tjb3VudGVyAQAPYWxsQ2FtcENvdW50ZXJzAQATW0xqYXZhL2xhbmcvU3RyaW5nOwEAC2NsaWNrbG9nZW5kAQAFZ2V0aW4BAAMoKUkBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQAFc2V0aW4BAAQoSSlWAQALZ2V0YWNjdXJhY3kBAAMoKUoBAAtzZXRhY2N1cmFjeQEABChKKVYBAA9nZXRjbGlja0xvZ0xpc3QBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEAD3NldGNsaWNrTG9nTGlzdAEAFShMamF2YS9sYW5nL1N0cmluZzspVgEABmdldGxvZwEABnNldGxvZwEACWdldGxvZ29iagEAFCgpTGphdmEvbGFuZy9PYmplY3Q7AQAJc2V0bG9nb2JqAQAVKExqYXZhL2xhbmcvT2JqZWN0OylWAQASZ2V0YWxsY2xpY2tjb3VudGVyAQASc2V0YWxsY2xpY2tjb3VudGVyAQASZ2V0YWxsQ2FtcENvdW50ZXJzAQAVKClbTGphdmEvbGFuZy9TdHJpbmc7AQASc2V0YWxsQ2FtcENvdW50ZXJzAQAWKFtMamF2YS9sYW5nL1N0cmluZzspVgEADmdldGNsaWNrbG9nZW5kAQAOc2V0Y2xpY2tsb2dlbmQBAAY8aW5pdD4BAAMoKVYBAAZpbnZva2UBAA1TdGFja01hcFRhYmxlBwBjAQAKRXhjZXB0aW9ucwcAfQEAClNvdXJjZUZpbGUBACZSZWZyZXNoTG9nX0JpZ0xpc3RfZXJyb3JfYmFrUmVkaXMuamF2YQwAJwAoDAApACoMACsALAwALQAsDAAuAC8MADAALAwAMQAyDAAzACgMAFAAUQEAAAEAGXJlZGlzL2NsaWVudHMvamVkaXMvSmVkaXMBAAkxMjcuMC4wLjEMAFAAfgEACSFWTUQxa3VsdAwAfwCADACBAIIHAIMMAIQAOwcAhQwAhgCHAQAXamF2YS9sYW5nL1N0cmluZ0J1aWxkZXIBAAggbGVuZyA6IAwAiACJDACIAIoMAIsAPwcAjAwAjQBBDACOAI8MAJAAkQEAEGphdmEvbGFuZy9TdHJpbmcMAJIAkwEABCwgMjABAAIyMAwAlACVAQBLTGV2ZWwzU2VydmVyL1JlZnJlc2hMb2dfQmlnTGlzdF9lcnJvcl9iYWsvUmVmcmVzaExvZ19CaWdMaXN0X2Vycm9yX2Jha1JlZGlzAQAQamF2YS9sYW5nL09iamVjdAEAE2phdmEvbGFuZy9FeGNlcHRpb24BABcoTGphdmEvbGFuZy9TdHJpbmc7SUkpVgEABGF1dGgBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwEABGxsZW4BACQoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvTG9uZzsBAA5qYXZhL2xhbmcvTG9uZwEACWxvbmdWYWx1ZQEAEGphdmEvbGFuZy9TeXN0ZW0BAANvdXQBABVMamF2YS9pby9QcmludFN0cmVhbTsBAAZhcHBlbmQBAC0oTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcjsBABwoSilMamF2YS9sYW5nL1N0cmluZ0J1aWxkZXI7AQAIdG9TdHJpbmcBABNqYXZhL2lvL1ByaW50U3RyZWFtAQAHcHJpbnRsbgEABmxyYW5nZQEAJihMamF2YS9sYW5nL1N0cmluZztKSilMamF2YS91dGlsL0xpc3Q7AQAFbHRyaW0BACgoTGphdmEvbGFuZy9TdHJpbmc7SkopTGphdmEvbGFuZy9TdHJpbmc7AQADZGVsAQAlKFtMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9Mb25nOwEACnJlcGxhY2VBbGwBADgoTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwAhACUAJgAAAAgABAAnACgAAAAEACkAKgAAAAQAKwAsAAAABAAtACwAAAAEAC4ALwAAAAQAMAAsAAAABAAxADIAAAAEADMAKAAAABIAAQA0ADUAAQA2AAAAHQABAAEAAAAFKrQAAawAAAABADcAAAAGAAEAAAAQAAEAOAA5AAEANgAAACIAAgACAAAABiobtQABsQAAAAEANwAAAAoAAgAAABMABQAUAAEAOgA7AAEANgAAAB0AAgABAAAABSq0AAKtAAAAAQA3AAAABgABAAAAFgABADwAPQABADYAAAAiAAMAAwAAAAYqH7UAArEAAAABADcAAAAKAAIAAAAZAAUAGgABAD4APwABADYAAAAdAAEAAQAAAAUqtAADsAAAAAEANwAAAAYAAQAAABwAAQBAAEEAAQA2AAAAIgACAAIAAAAGKiu1AAOxAAAAAQA3AAAACgACAAAAHwAFACAAAQBCAD8AAQA2AAAAHQABAAEAAAAFKrQABLAAAAABADcAAAAGAAEAAAAiAAEAQwBBAAEANgAAACIAAgACAAAABiortQAEsQAAAAEANwAAAAoAAgAAACUABQAmAAEARABFAAEANgAAAB0AAQABAAAABSq0AAWwAAAAAQA3AAAABgABAAAAKAABAEYARwABADYAAAAiAAIAAgAAAAYqK7UABbEAAAABADcAAAAKAAIAAAArAAUALAABAEgAPwABADYAAAAdAAEAAQAAAAUqtAAGsAAAAAEANwAAAAYAAQAAAC4AAQBJAEEAAQA2AAAAIgACAAIAAAAGKiu1AAaxAAAAAQA3AAAACgACAAAAMQAFADIAAQBKAEsAAQA2AAAAHQABAAEAAAAFKrQAB7AAAAABADcAAAAGAAEAAAA0AAEATABNAAEANgAAACIAAgACAAAABiortQAHsQAAAAEANwAAAAoAAgAAADcABQA4AAEATgA1AAEANgAAAB0AAQABAAAABSq0AAisAAAAAQA3AAAABgABAAAAOgABAE8AOQABADYAAAAiAAIAAgAAAAYqG7UACLEAAAABADcAAAAKAAIAAAA9AAUAPgABAFAAUQABADYAAABsAAMAAQAAADAqtwAJKgO1AAEqCbUAAioSCrUAAyoSCrUABCoBtQAFKhIKtQAGKgG1AAcqA7UACLEAAAABADcAAAAqAAoAAABAAAQABwAJAAgADgAJABQACgAaAAsAHwAMACUADQAqAA4ALwBBAAEAUgBRAAIANgAAATUACQAEAAAA2bsAC1kSDBEY6xINtwAOTCsSD7YAEFcrKrQAA7YAEbYAEkGyABO7ABRZtwAVEha2ABcgtgAYtgAZtgAaKrQAAYUqtAACaSCUnABHKgO1AAgqKyq0AAMqtAABBGSFKrQAAmkqtAABhSq0AAJpCmW2ABu1AAUrKrQAAyq0AAGFKrQAAmkKZRQAHLYAHlenADMqKyq0AAMqtAABBGSFKrQAAmkUABy2ABu1AAUqBLUACCsEvQAfWQMqtAADU7YAIFcqKrQABbYAIbUABCoqtAAEEiISI7YAJLUABLEAAAACADcAAAA6AA4AAABOAA8ATwAWAFAAIgBRADsAUgBKAFMATwBUAHMAVQCOAFgAqQBbAK4AXAC+AF8AyQBgANgAYwBTAAAACgAC/QCOBwBUBC8AVQAAAAQAAQBWAAEAVwAAAAIAWA==</byteCode>
+                    </class>
+                </byteCode>
+            </config>
+            <pd:inputBindings>
+                <javaCodeActivityInput>
+                    <in>
+                        <xsl:value-of select="$index1"/>
+                    </in>
+                    <accuracy>
+                        <xsl:value-of select="10000"/>
+                    </accuracy>
+                    <clickLogList>
+                        <xsl:value-of select="&quot;clickLogList_bak11&quot;"/>
+                    </clickLogList>
+                </javaCodeActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Write File">
+            <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+            <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+            <pd:x>160</pd:x>
+            <pd:y>166</pd:y>
+            <config>
+                <encoding>text</encoding>
+                <compressFile>None</compressFile>
+                <append>true</append>
+                <createMissingDirectories>true</createMissingDirectories>
+            </config>
+            <pd:inputBindings>
+                <ns:WriteActivityInputTextClass>
+                    <fileName>
+                        <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/Log/ClickLog,&quot;_manual_bak&quot;)"/>
+                    </fileName>
+                    <textContent>
+                        <xsl:value-of select="tib:substring-before-last(substring-after($Redis/javaCodeActivityOutput/log, &quot;[&quot;), &quot;]&quot;)"/>
+                    </textContent>
+                </ns:WriteActivityInputTextClass>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>LoopClickLogListToFile_InCaseOfDataSize</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LoopClickLogListToFile_InCaseOfDataSize</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

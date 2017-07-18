@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/file">
+    <pd:name>Level3Server/Refresh_ShortList.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>150</pd:startX>
+    <pd:startY>64</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>450</pd:endX>
+    <pd:endY>64</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1489853915630</pd:targetNamespace>
+    <pd:activity name="Redis">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>259</pd:x>
+        <pd:y>95</pd:y>
+        <config>
+            <fileName>Refresh_ShortListRedis</fileName>
+            <packageName>Level3Server.Refresh_ShortList</packageName>
+            <fullsource>package Level3Server.Refresh_ShortList;
+import java.util.*;
+import java.io.*;
+import redis.clients.jedis.Jedis;     
+public class Refresh_ShortListRedis{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected int in = 0;
+	protected long accuracy = 0;
+	protected String clickLogList = "";
+	protected String log = "";
+	protected Object logobj = null;
+	protected String allclickcounter = "";
+	protected String[] allCampCounters = null;
+	protected int clicklogend = 0;
+	public int getin() {
+		return in;
+	}
+	public void setin(int val) {
+		in = val;
+	}
+	public long getaccuracy() {
+		return accuracy;
+	}
+	public void setaccuracy(long val) {
+		accuracy = val;
+	}
+	public String getclickLogList() {
+		return clickLogList;
+	}
+	public void setclickLogList(String val) {
+		clickLogList = val;
+	}
+	public String getlog() {
+		return log;
+	}
+	public void setlog(String val) {
+		log = val;
+	}
+	public Object getlogobj() {
+		return logobj;
+	}
+	public void setlogobj(Object val) {
+		logobj = val;
+	}
+	public String getallclickcounter() {
+		return allclickcounter;
+	}
+	public void setallclickcounter(String val) {
+		allclickcounter = val;
+	}
+	public String[] getallCampCounters() {
+		return allCampCounters;
+	}
+	public void setallCampCounters(String[] val) {
+		allCampCounters = val;
+	}
+	public int getclicklogend() {
+		return clicklogend;
+	}
+	public void setclicklogend(int val) {
+		clicklogend = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public Refresh_ShortListRedis() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : int in
+	In  : long accuracy
+	In  : String clickLogList
+	Out : String log
+	Out : Object logobj
+	Out : String allclickcounter
+	Out : String[] allCampCounters
+	Out : int clicklogend
+* Available Variables: DO NOT MODIFY *****/
+
+ 	Jedis jedis =  new Jedis("127.0.0.1",6379,100000); 
+ 	jedis.auth("!VMD1kult");
+	long len=jedis.llen(clickLogList);
+		logobj=jedis.lrange(clickLogList, in*accuracy,-1);
+	log=logobj.toString();
+	log=log.replaceAll(", 20","20");
+clicklogend=1;
+//	jedis.disconnect();
+}
+}
+</fullsource>
+            <outputData>
+                <row>
+                    <fieldName>log</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>logobj</fieldName>
+                    <fieldType>ObjectReference</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>allclickcounter</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>allCampCounters</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>repeating</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>clicklogend</fieldName>
+                    <fieldType>int</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </outputData>
+            <inputData>
+                <row>
+                    <fieldName>in</fieldName>
+                    <fieldType>int</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>accuracy</fieldName>
+                    <fieldType>long</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>clickLogList</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </inputData>
+            <byteCode>
+                <class>
+                    <name>Refresh_ShortListRedis</name>
+                    <byteCode>yv66vgAAADQAdAkAGgBMCQAaAE0JABoATgkAGgBPCQAaAFAJABoAUQkAGgBSCQAaAFMKABsAVAgAVQcAVggAVwMAAYagCgALAFgIAFkKAAsAWgoACwBbCgBcAF0F//////////8KAAsAXgoAGwBfCABgCABhCgBiAGMHAGQHAGUBAAJpbgEAAUkBAAhhY2N1cmFjeQEAAUoBAAxjbGlja0xvZ0xpc3QBABJMamF2YS9sYW5nL1N0cmluZzsBAANsb2cBAAZsb2dvYmoBABJMamF2YS9sYW5nL09iamVjdDsBAA9hbGxjbGlja2NvdW50ZXIBAA9hbGxDYW1wQ291bnRlcnMBABNbTGphdmEvbGFuZy9TdHJpbmc7AQALY2xpY2tsb2dlbmQBAAVnZXRpbgEAAygpSQEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAVzZXRpbgEABChJKVYBAAtnZXRhY2N1cmFjeQEAAygpSgEAC3NldGFjY3VyYWN5AQAEKEopVgEAD2dldGNsaWNrTG9nTGlzdAEAFCgpTGphdmEvbGFuZy9TdHJpbmc7AQAPc2V0Y2xpY2tMb2dMaXN0AQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQAGZ2V0bG9nAQAGc2V0bG9nAQAJZ2V0bG9nb2JqAQAUKClMamF2YS9sYW5nL09iamVjdDsBAAlzZXRsb2dvYmoBABUoTGphdmEvbGFuZy9PYmplY3Q7KVYBABJnZXRhbGxjbGlja2NvdW50ZXIBABJzZXRhbGxjbGlja2NvdW50ZXIBABJnZXRhbGxDYW1wQ291bnRlcnMBABUoKVtMamF2YS9sYW5nL1N0cmluZzsBABJzZXRhbGxDYW1wQ291bnRlcnMBABYoW0xqYXZhL2xhbmcvU3RyaW5nOylWAQAOZ2V0Y2xpY2tsb2dlbmQBAA5zZXRjbGlja2xvZ2VuZAEABjxpbml0PgEAAygpVgEABmludm9rZQEACkV4Y2VwdGlvbnMHAGYBAApTb3VyY2VGaWxlAQAbUmVmcmVzaF9TaG9ydExpc3RSZWRpcy5qYXZhDAAcAB0MAB4AHwwAIAAhDAAiACEMACMAJAwAJQAhDAAmACcMACgAHQwARQBGAQAAAQAZcmVkaXMvY2xpZW50cy9qZWRpcy9KZWRpcwEACTEyNy4wLjAu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</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <in>
+                    <xsl:value-of select="0"/>
+                </in>
+                <accuracy>
+                    <xsl:value-of select="4000"/>
+                </accuracy>
+                <clickLogList>
+                    <xsl:value-of select="&quot;clickLogList_del11&quot;"/>
+                </clickLogList>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Write File">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>372</pd:x>
+        <pd:y>86</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+            <append>true</append>
+            <createMissingDirectories>true</createMissingDirectories>
+        </config>
+        <pd:inputBindings>
+            <ns1:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/Log/ClickLog,&quot;_manual_del_1&quot;)"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="tib:substring-before-last(substring-after($Redis/javaCodeActivityOutput/log, &quot;[&quot;), &quot;]&quot;)"/>
+                </textContent>
+            </ns1:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Redis</pd:from>
+        <pd:to>Write File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Redis</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Write File</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

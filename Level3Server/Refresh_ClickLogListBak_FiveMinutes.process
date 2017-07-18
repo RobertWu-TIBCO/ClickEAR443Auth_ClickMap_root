@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/file">
+    <pd:name>Level3Server/Refresh_ClickLogListBak_FiveMinutes.process</pd:name>
+    <pd:startName>Timer</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="Timer">
+        <pd:type>com.tibco.plugin.timer.TimerEventSource</pd:type>
+        <pd:resourceType>ae.activities.timer</pd:resourceType>
+        <pd:x>39</pd:x>
+        <pd:y>148</pd:y>
+        <config>
+            <StartTime>1500304360000</StartTime>
+            <Frequency>false</Frequency>
+            <TimeInterval>3</TimeInterval>
+            <FrequencyIndex>Minute</FrequencyIndex>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>275</pd:endX>
+    <pd:endY>64</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1480061773394</pd:targetNamespace>
+    <pd:activity name="Write File">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>285</pd:x>
+        <pd:y>151</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+            <append>true</append>
+            <createMissingDirectories>true</createMissingDirectories>
+        </config>
+        <pd:inputBindings>
+            <ns1:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="$_globalVariables/ns:GlobalVariables/Log/ClickLog"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="tib:substring-before-last(substring-after($Redis/javaCodeActivityOutput/log, &quot;[&quot;), &quot;]&quot;)"/>
+                </textContent>
+            </ns1:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>406</pd:x>
+        <pd:y>159</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="SendAlertMail">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>399</pd:x>
+        <pd:y>56</pd:y>
+        <config>
+            <processName>/Level2Server/SendAlertMail.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <subjectandcontent>
+                    <xsl:value-of select="concat(&#xA;&quot; Five minute redis fresh log error : &#xA;&quot;,&#xA;$Catch/exceptiondata/*&#xA;)"/>
+                </subjectandcontent>
+                <subject>
+                    <xsl:value-of select="&quot;Win Finve Minute Refresh Log Error&quot;"/>
+                </subject>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>101</pd:x>
+        <pd:y>69</pd:y>
+        <pd:width>115</pd:width>
+        <pd:height>140</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>errorLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:indexSlot>five</pd:indexSlot>
+            <pd:errorCondition>$five&gt;2</pd:errorCondition>
+            <pd:suspendAfterErrorRetry>false</pd:suspendAfterErrorRetry>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Redis</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Redis</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Redis">
+            <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+            <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+            <pd:x>147</pd:x>
+            <pd:y>133</pd:y>
+            <config>
+                <fileName>Refresh_ClickLogListBak_FiveMinutesRedis</fileName>
+                <packageName>Level3Server.Refresh_ClickLogListBak_FiveMinutes</packageName>
+                <fullsource>package Level3Server.Refresh_ClickLogListBak_FiveMinutes;
+import java.util.*;
+import java.io.*;
+import redis.clients.jedis.Jedis;
+import com.tm.mc.redis.MCRedisInstance;     
+public class Refresh_ClickLogListBak_FiveMinutesRedis{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String log = "";
+	protected Object logobj = null;
+	public String getlog() {
+		return log;
+	}
+	public void setlog(String val) {
+		log = val;
+	}
+	public Object getlogobj() {
+		return logobj;
+	}
+	public void setlogobj(Object val) {
+		logobj = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public Refresh_ClickLogListBak_FiveMinutesRedis() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	Out : String log
+	Out : Object logobj
+* Available Variables: DO NOT MODIFY *****/
+ //	Jedis jedis =  new Jedis("127.0.0.1",6379,100000); 
+//	jedis.auth("!VMD1kult");
+Jedis jedis = MCRedisInstance.getInstance().getJedis();
+	jedis.renamenx("clickLogList_bak","clickLogList_del");
+	logobj=jedis.lrange("clickLogList_del", 0,-1);
+	log=logobj.toString();
+	log=log.replaceAll(", 20","20");
+	jedis.del("clickLogList_del"); 
+jedis.close();}
+}
+</fullsource>
+                <inputData/>
+                <outputData>
+                    <row>
+                        <fieldName>log</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>logobj</fieldName>
+                        <fieldType>ObjectReference</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                </outputData>
+                <byteCode>
+                    <class>
+                        <name>Refresh_ClickLogListBak_FiveMinutesRedis</name>
+                        <byteCode>yv66vgAAADQAUQkAEwAqCQATACsKABQALAgALQoALgAvCgAuADAIADEIADIKADMANAX//////////woAMwA1CgAUADYIADcIADgKADkAOgoAMwA7CgAzADwHAD0HAD4BAANsb2cBABJMamF2YS9sYW5nL1N0cmluZzsBAAZsb2dvYmoBABJMamF2YS9sYW5nL09iamVjdDsBAAZnZXRsb2cBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAZzZXRsb2cBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAlnZXRsb2dvYmoBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwEACXNldGxvZ29iagEAFShMamF2YS9sYW5nL09iamVjdDspVgEABjxpbml0PgEAAygpVgEABmludm9rZQEACkV4Y2VwdGlvbnMHAD8BAApTb3VyY2VGaWxlAQAtUmVmcmVzaF9DbGlja0xvZ0xpc3RCYWtfRml2ZU1pbnV0ZXNSZWRpcy5qYXZhDAAVABYMABcAGAwAIwAkAQAABwBADABBAEIMAEMARAEAEGNsaWNrTG9nTGlzdF9iYWsBABBjbGlja0xvZ0xpc3RfZGVsBwBFDABGAEcMAEgASQwASgAaAQAELCAyMAEAAjIwBwBLDABMAE0MAE4ATwwAUAAkAQBZTGV2ZWwzU2VydmVyL1JlZnJlc2hfQ2xpY2tMb2dMaXN0QmFrX0ZpdmVNaW51dGVzL1JlZnJlc2hfQ2xpY2tMb2dMaXN0QmFrX0ZpdmVNaW51dGVzUmVkaXMBABBqYXZhL2xhbmcvT2JqZWN0AQATamF2YS9sYW5nL0V4Y2VwdGlvbgEAH2NvbS90bS9tYy9yZWRpcy9NQ1JlZGlzSW5zdGFuY2UBAAtnZXRJbnN0YW5jZQEAIygpTGNvbS90bS9tYy9yZWRpcy9NQ1JlZGlzSW5zdGFuY2U7AQAIZ2V0SmVkaXMBAB0oKUxyZWRpcy9jbGllbnRzL2plZGlzL0plZGlzOwEAGXJlZGlzL2NsaWVudHMvamVkaXMvSmVkaXMBAAhyZW5hbWVueAEANihMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9Mb25nOwEABmxyYW5nZQEAJihMamF2YS9sYW5nL1N0cmluZztKSilMamF2YS91dGlsL0xpc3Q7AQAIdG9TdHJpbmcBABBqYXZhL2xhbmcvU3RyaW5nAQAKcmVwbGFjZUFsbAEAOChMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmc7AQADZGVsAQAkKExqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0xvbmc7AQAFY2xvc2UAIQATABQAAAACAAQAFQAWAAAABAAXABgAAAAGAAEAGQAaAAEAGwAAAB0AAQABAAAABSq0AAGwAAAAAQAcAAAABgABAAAACwABAB0AHgABABsAAAAiAAIAAgAAAAYqK7UAAbEAAAABABwAAAAKAAIAAAAOAAUADwABAB8AIAABABsAAAAdAAEAAQAAAAUqtAACsAAAAAEAHAAAAAYAAQAAABEAAQAhACIAAQAbAAAAIgACAAIAAAAGKiu1AAKxAAAAAQAcAAAACgACAAAAFAAFABUAAQAjACQAAQAbAAAANAACAAEAAAAQKrcAAyoSBLUAASoBtQACsQAAAAEAHAAAABIABAAAABcABAAIAAoACQAPABgAAQAlACQAAgAbAAAAdAAHAAIAAABEuAAFtgAGTCsSBxIItgAJVyorEggJFAAKtgAMtQACKiq0AAK2AA21AAEqKrQAARIOEg+2ABC1AAErEgi2ABFXK7YAErEAAAABABwAAAAeAAcAAAAgAAcAIQAQACIAHgAjACkAJAA4ACUAPwAmACYAAAAEAAEAJwABACgAAAACACk=</byteCode>
+                    </class>
+                </byteCode>
+            </config>
+            <pd:inputBindings>
+                <javaCodeActivityInput/>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Write File</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>SendAlertMail</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendAlertMail</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>Write File</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Timer</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

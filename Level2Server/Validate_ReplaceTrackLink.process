@@ -1,0 +1,1187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tib="http://www.tibco.com/bw/xslt/custom-functions" xmlns:ns2="http://www.tibco.com/pe/WriteToLogActivitySchema" xmlns:ns1="http://www.tibco.com/pe/EngineTypes" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <pd:name>Level2Server/Validate_ReplaceTrackLink.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="AllParams" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="xff" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="ua" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>59</pd:startX>
+    <pd:startY>43</pd:startY>
+    <pd:returnBindings>
+        <root>
+            <xsl:if test="$Start/root/AllParams">
+                <AllParams>
+                    <xsl:value-of select="$Start/root/AllParams"/>
+                </AllParams>
+            </xsl:if>
+            <UnixTime>
+                <xsl:value-of select="$Get_offer_id_n_id/root/UnixTime"/>
+            </UnixTime>
+            <xsl:for-each select="$GenerateAllParams/javaCodeActivityOutput">
+                <GetParseData>
+                    <offer_id>
+                        <xsl:value-of select="$Get_offer_id_n_id/root/offer_id"/>
+                    </offer_id>
+                    <xsl:if test="$Get_offer_id_n_id/root/n_id">
+                        <nid>
+                            <xsl:value-of select="$Get_offer_id_n_id/root/n_id"/>
+                        </nid>
+                    </xsl:if>
+                    <xsl:if test="cid">
+                        <cid>
+                            <xsl:value-of select="cid"/>
+                        </cid>
+                    </xsl:if>
+                    <xsl:if test="ip">
+                        <ip>
+                            <xsl:value-of select="ip"/>
+                        </ip>
+                    </xsl:if>
+                    <xsl:if test="os">
+                        <os>
+                            <xsl:value-of select="os"/>
+                        </os>
+                    </xsl:if>
+                    <xsl:if test="os_v">
+                        <os_v>
+                            <xsl:value-of select="os_v"/>
+                        </os_v>
+                    </xsl:if>
+                    <xsl:if test="ParamMapStr">
+                        <ParamMapStr>
+                            <xsl:value-of select="ParamMapStr"/>
+                        </ParamMapStr>
+                    </xsl:if>
+                </GetParseData>
+            </xsl:for-each>
+            <xsl:if test="$ReplaceTrackLink/javaCodeActivityOutput/ClickID">
+                <ClickID>
+                    <xsl:value-of select="$ReplaceTrackLink/javaCodeActivityOutput/ClickID"/>
+                </ClickID>
+            </xsl:if>
+            <xsl:if test="$ReplaceTrackLink/javaCodeActivityOutput/RelacedUrl">
+                <ReplacedUrl>
+                    <xsl:value-of select="$ReplaceTrackLink/javaCodeActivityOutput/RelacedUrl"/>
+                </ReplacedUrl>
+            </xsl:if>
+        </root>
+    </pd:returnBindings>
+    <pd:endName>ConcatAllContentsAsResponse</pd:endName>
+    <pd:endType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="AllParams" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="UnixTime" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="GetParseData" minOccurs="0">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="offer_id" type="xsd:string" minOccurs="0"/>
+                                <xsd:element name="nid" type="xsd:string" minOccurs="0"/>
+                                <xsd:element name="cid" type="xsd:string" minOccurs="0"/>
+                                <xsd:element name="ip" type="xsd:string" minOccurs="0"/>
+                                <xsd:element name="os" type="xsd:string" minOccurs="0"/>
+                                <xsd:element name="os_v" type="xsd:string" minOccurs="0"/>
+                                <xsd:element name="ParamMapStr" type="xsd:string" minOccurs="0"/>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="offer_click_tl" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="ClickID" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="ReplacedUrl" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>457</pd:endX>
+    <pd:endY>356</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1472233940811</pd:targetNamespace>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:x>562</pd:x>
+        <pd:y>312</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Rethrow">
+        <pd:type>com.tibco.pe.core.RethrowActivity</pd:type>
+        <pd:resourceType>ae.activities.rethrow</pd:resourceType>
+        <pd:x>681</pd:x>
+        <pd:y>148</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="GenerateAllParams">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:description>replace ip,os,os_v</pd:description>
+        <pd:x>61</pd:x>
+        <pd:y>279</pd:y>
+        <config>
+            <fileName>Validate_ReplaceTrackLinkGenerateAllParams</fileName>
+            <packageName>Level2Server.Validate_ReplaceTrackLink</packageName>
+            <fullsource>package Level2Server.Validate_ReplaceTrackLink;
+import java.util.*;
+import java.io.*;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+public class Validate_ReplaceTrackLinkGenerateAllParams{
+
+enum osenum{
+iphone,ipad,android,linux
+}
+
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String AllParams = "";
+	protected String xff = "";
+	protected String ua = "";
+	protected String ua_os_v = "";
+	protected String offer_id = "";
+	protected String n_id = "";
+	protected String cid = "";
+	protected String ip = "";
+	protected String os = "";
+	protected String os_v = "";
+	protected Object ParamMapObj = null;
+	protected String ParamMapStr = "";
+	public String getAllParams() {
+		return AllParams;
+	}
+	public void setAllParams(String val) {
+		AllParams = val;
+	}
+	public String getxff() {
+		return xff;
+	}
+	public void setxff(String val) {
+		xff = val;
+	}
+	public String getua() {
+		return ua;
+	}
+	public void setua(String val) {
+		ua = val;
+	}
+	public String getua_os_v() {
+		return ua_os_v;
+	}
+	public void setua_os_v(String val) {
+		ua_os_v = val;
+	}
+	public String getoffer_id() {
+		return offer_id;
+	}
+	public void setoffer_id(String val) {
+		offer_id = val;
+	}
+	public String getn_id() {
+		return n_id;
+	}
+	public void setn_id(String val) {
+		n_id = val;
+	}
+	public String getcid() {
+		return cid;
+	}
+	public void setcid(String val) {
+		cid = val;
+	}
+	public String getip() {
+		return ip;
+	}
+	public void setip(String val) {
+		ip = val;
+	}
+	public String getos() {
+		return os;
+	}
+	public void setos(String val) {
+		os = val;
+	}
+	public String getos_v() {
+		return os_v;
+	}
+	public void setos_v(String val) {
+		os_v = val;
+	}
+	public Object getParamMapObj() {
+		return ParamMapObj;
+	}
+	public void setParamMapObj(Object val) {
+		ParamMapObj = val;
+	}
+	public String getParamMapStr() {
+		return ParamMapStr;
+	}
+	public void setParamMapStr(String val) {
+		ParamMapStr = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public Validate_ReplaceTrackLinkGenerateAllParams() {
+	}
+
+   public static String getMatcher(String regex, String source) {  
+       String result = "";  
+       Pattern pattern = Pattern.compile(regex);  
+       Matcher matcher = pattern.matcher(source);  
+       while (matcher.find()) {  
+           result = matcher.group(1);
+       }  
+       return result;  
+   }  
+
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : String AllParams
+	In  : String xff
+	In  : String ua
+	In  : String ua_os_v
+	Out : String offer_id
+	Out : String n_id
+	Out : String cid
+	Out : String ip
+	Out : String os
+	Out : String os_v
+	Out : Object ParamMapObj
+	Out : String ParamMapStr
+* Available Variables: DO NOT MODIFY *****/
+		Map&lt;String, String&gt; ParamMap = new HashMap&lt;String, String&gt;();
+		String[] AllParams_array, param_array;
+		String judgeParam_value;
+		AllParams_array = AllParams.split("[&amp;]");
+	
+		for (String param_i : AllParams_array) {
+			param_array = param_i.split("[=]");
+			if (param_array.length &gt; 1) {
+				ParamMap.put(param_array[0], param_array[1]);
+			}
+		}
+		ParamMap.put("ua", ua);
+		ParamMapObj = ParamMap;
+		offer_id = ParamMap.get("offer_id");
+		n_id = ParamMap.get("n_id");
+		cid = ParamMap.get("cid");
+		ip = ParamMap.get("ip");
+		os = ParamMap.get("os");
+		os_v = ParamMap.get("os_v");
+		if (ip == null) {
+			ParamMap.put("ip", xff);
+			ip = ParamMap.get("ip");
+		}
+		String os_vtmp, os_tmp = null, uatmp, ua_os_v_tmp = null;
+		uatmp = ua.toLowerCase();
+		if (os == null) {
+			for (Enum ose : osenum.values()) {
+				if (uatmp.contains(ose.name())) {
+					os_tmp = ose.name();
+					ParamMap.put("os", os_tmp);
+					break;
+				}
+			}
+			if (ParamMap.get("os") == null) {
+				ParamMap.put("os", "unknown");
+			}
+			os = ParamMap.get("os");
+		}
+		if (os_v == null) {
+			ua_os_v_tmp = ua_os_v.replaceAll("_", ".");
+			String regex2 = "(\\d+\\.\\d(\\.\\d)*)";
+			try {
+				String rs2 = getMatcher(regex2, ua_os_v_tmp);
+				os_vtmp = rs2;
+				// System.out.println("result of reg2 : \n"+rs2);
+				ParamMap.put("os_v", os_vtmp);
+			} catch (Exception e) {
+			}
+			os_v = ParamMap.get("os_v");
+		}
+		ParamMapStr = ParamMap.toString();
+}
+}
+
+
+
+</fullsource>
+            <inputData>
+                <row>
+                    <fieldName>AllParams</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>xff</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ua</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ua_os_v</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </inputData>
+            <outputData>
+                <row>
+                    <fieldName>offer_id</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>n_id</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>cid</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ip</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>os</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>os_v</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ParamMapObj</fieldName>
+                    <fieldType>ObjectReference</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ParamMapStr</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </outputData>
+            <byteCode>
+                <class>
+                    <name>Validate_ReplaceTrackLinkGenerateAllParams$osenum</name>
+                    <byteCode>yv66vgAAADQAOAkABAAoCgApACoHABkHACwKABAALQoAEAAuCAARCgAEAC4JAAQALwgAFQkABAAwCAAWCQAEADEIABcJAAQAMgcAMwEABmlwaG9uZQEABm9zZW51bQEADElubmVyQ2xhc3NlcwEAWkxMZXZlbDJTZXJ2ZXIvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGluay9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rR2VuZXJhdGVBbGxQYXJhbXMkb3NlbnVtOwEABGlwYWQBAAdhbmRyb2lkAQAFbGludXgBAAckVkFMVUVTAQBbW0xMZXZlbDJTZXJ2ZXIvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGluay9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rR2VuZXJhdGVBbGxQYXJhbXMkb3NlbnVtOwEABnZhbHVlcwEAXSgpW0xMZXZlbDJTZXJ2ZXIvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGluay9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rR2VuZXJhdGVBbGxQYXJhbXMkb3NlbnVtOwEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAd2YWx1ZU9mAQBuKExqYXZhL2xhbmcvU3RyaW5nOylMTGV2ZWwyU2VydmVyL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmsvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGlua0dlbmVyYXRlQWxsUGFyYW1zJG9zZW51bTsBAAY8aW5pdD4BABYoTGphdmEvbGFuZy9TdHJpbmc7SSlWAQAJU2lnbmF0dXJlAQADKClWAQAIPGNsaW5pdD4BAGxMamF2YS9sYW5nL0VudW08TExldmVsMlNlcnZlci9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmtHZW5lcmF0ZUFsbFBhcmFtcyRvc2VudW07PjsBAApTb3VyY2VGaWxlAQAvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGlua0dlbmVyYXRlQWxsUGFyYW1zLmphdmEMABgAGQcAGQwANAA1BwA2AQBYTGV2ZWwyU2VydmVyL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmsvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGlua0dlbmVyYXRlQWxsUGFyYW1zJG9zZW51bQwAHgA3DAAgACEMABEAFAwAFQAUDAAWABQMABcAFAEADmphdmEvbGFuZy9FbnVtAQAFY2xvbmUBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwEAUUxldmVsMlNlcnZlci9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmtHZW5lcmF0ZUFsbFBhcmFtcwEANShMamF2YS9sYW5nL0NsYXNzO0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0VudW07QDAABAAQAAAABUAZABEAFAAAQBkAFQAUAABAGQAWABQAAEAZABcAFAAAEBoAGAAZAAAABAAJABoAGwABABwAAAAiAAEAAAAAAAqyAAG2AALAAAOwAAAAAQAdAAAABgABAAAACQAJAB4AHwABABwAAAAiAAIAAQAAAAoSBCq4AAXAAASwAAAAAQAdAAAABgABAAAACQACACAAIQACABwAAAAfAAMAAwAAAAcqKxy3AAaxAAAAAQAdAAAABgABAAAACQAiAAAAAgAjAAgAJAAjAAEAHAAAAHAABAAAAAAAVLsABFkSBwO3AAizAAm7AARZEgoEtwAIswALuwAEWRIMBbcACLMADbsABFkSDga3AAizAA8HvQAEWQOyAAlTWQSyAAtTWQWyAA1TWQayAA9TswABsQAAAAEAHQAAAAoAAgAAAAoANAAJAAMAIgAAAAIAJQAmAAAAAgAnABMAAAAKAAEABAArABJAGA==</byteCode>
+                </class>
+                <class>
+                    <name>Validate_ReplaceTrackLinkGenerateAllParams</name>
+                    <byteCode>yv66vgAAADQAuAkALgBwCQAuAHEJAC4AcgkALgBzCQAuAHQJAC4AdQkALgB2CQAuAHcJAC4AeAkALgB5CQAuAHoJAC4AewoALwB8CAB9CgB+AH8KAH4AgAoAgQCCCgCBAIMHAIQKABMAfAgAhQoAHACGCACHCwCIAIkIADYIADgLAIgAigcAiwgAOQgAOggAOwgAPAgAPQoAHACMCgAwAI0KAI4AjwoAHACQCACRCACSCACTCgAcAJQIAJUKAC4AlgcAlwoALwCYBwCZBwCaBwCbAQAGb3NlbnVtAQAMSW5uZXJDbGFzc2VzAQAJQWxsUGFyYW1zAQASTGphdmEvbGFuZy9TdHJpbmc7AQADeGZmAQACdWEBAAd1YV9vc192AQAIb2ZmZXJfaWQBAARuX2lkAQADY2lkAQACaXABAAJvcwEABG9zX3YBAAtQYXJhbU1hcE9iagEAEkxqYXZhL2xhbmcvT2JqZWN0OwEAC1BhcmFtTWFwU3RyAQAMZ2V0QWxsUGFyYW1zAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQAMc2V0QWxsUGFyYW1zAQAVKExqYXZhL2xhbmcvU3RyaW5nOylWAQAGZ2V0eGZmAQAGc2V0eGZmAQAFZ2V0dWEBAAVzZXR1YQEACmdldHVhX29zX3YBAApzZXR1YV9vc192AQALZ2V0b2ZmZXJfaWQBAAtzZXRvZmZlcl9pZAEAB2dldG5faWQBAAdzZXRuX2lkAQAGZ2V0Y2lkAQAGc2V0Y2lkAQAFZ2V0aXABAAVzZXRpcAEABWdldG9zAQAFc2V0b3MBAAdnZXRvc192AQAHc2V0b3NfdgEADmdldFBhcmFtTWFwT2JqAQAUKClMamF2YS9sYW5nL09iamVjdDsBAA5zZXRQYXJhbU1hcE9iagEAFShMamF2YS9sYW5nL09iamVjdDspVgEADmdldFBhcmFtTWFwU3RyAQAOc2V0UGFyYW1NYXBTdHIBAAY8aW5pdD4BAAMoKVYBAApnZXRNYXRjaGVyAQA4KExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL1N0cmluZzsBAA1TdGFja01hcFRhYmxlBwCLBwCcBwCdAQAGaW52b2tlBwCZBwCeBwCfBwCgBwCXAQAKRXhjZXB0aW9ucwEAClNvdXJjZUZpbGUBAC9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rR2VuZXJhdGVBbGxQYXJhbXMuamF2YQwAMwA0DAA1ADQMADYANAwANwA0DAA4ADQMADkANAwAOgA0DAA7ADQMADwANAwAPQA0DAA+AD8MAEAANAwAXwBgAQAABwCcDAChAKIMAKMApAcAnQwApQCmDACnAKgBABFqYXZhL3V0aWwvSGFzaE1hcAEAA1smXQwAqQCqAQADWz1dBwCeDACrAKwMAK0ArgEAEGphdmEvbGFuZy9TdHJpbmcMAK8AQgwAsACxBwCyDACzAEIMALQAtQEAB3Vua25vd24BAAFfAQABLgwAtgBiAQAQKFxkK1wuXGQoXC5cZCkqKQwAYQBiAQATamF2YS9sYW5nL0V4Y2VwdGlvbgwAtwBCAQBRTGV2ZWwyU2VydmVyL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmsvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGlua0dlbmVyYXRlQWxsUGFyYW1zAQAQamF2YS9sYW5nL09iamVjdAEAWExldmVsMlNlcnZlci9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmtHZW5lcmF0ZUFsbFBhcmFtcyRvc2VudW0BABdqYXZhL3V0aWwvcmVnZXgvUGF0dGVybgEAF2phdmEvdXRpbC9yZWdleC9NYXRjaGVyAQANamF2YS91dGlsL01hcAEAE1tMamF2YS9sYW5nL1N0cmluZzsBAFtbTExldmVsMlNlcnZlci9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmtHZW5lcmF0ZUFsbFBhcmFtcyRvc2VudW07AQAHY29tcGlsZQEALShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvdXRpbC9yZWdleC9QYXR0ZXJuOwEAB21hdGNoZXIBADMoTGphdmEvbGFuZy9DaGFyU2VxdWVuY2U7KUxqYXZhL3V0aWwvcmVnZXgvTWF0Y2hlcjsBAARmaW5kAQADKClaAQAFZ3JvdXABABUoSSlMamF2YS9sYW5nL1N0cmluZzsBAAVzcGxpdAEAJyhMamF2YS9sYW5nL1N0cmluZzspW0xqYXZhL2xhbmcvU3RyaW5nOwEAA3B1dAEAOChMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQADZ2V0AQAmKExqYXZhL2xhbmcvT2JqZWN0OylMamF2YS9sYW5nL09iamVjdDsBAAt0b0xvd2VyQ2FzZQEABnZhbHVlcwEAXSgpW0xMZXZlbDJTZXJ2ZXIvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGluay9WYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rR2VuZXJhdGVBbGxQYXJhbXMkb3NlbnVtOwEADmphdmEvbGFuZy9FbnVtAQAEbmFtZQEACGNvbnRhaW5zAQAbKExqYXZhL2xhbmcvQ2hhclNlcXVlbmNlOylaAQAKcmVwbGFjZUFsbAEACHRvU3RyaW5nACEALgAvAAAADAAEADMANAAAAAQANQA0AAAABAA2ADQAAAAEADcANAAAAAQAOAA0AAAABAA5ADQAAAAEADoANAAAAAQAOwA0AAAABAA8ADQAAAAEAD0ANAAAAAQAPgA/AAAABABAADQAAAAbAAEAQQBCAAEAQwAAAB0AAQABAAAABSq0AAGwAAAAAQBEAAAABgABAAAAGwABAEUARgABAEMAAAAiAAIAAgAAAAYqK7UAAbEAAAABAEQAAAAKAAIAAAAeAAUAHwABAEcAQgABAEMAAAAdAAEAAQAAAAUqtAACsAAAAAEARAAAAAYAAQAAACEAAQBIAEYAAQBDAAAAIgACAAIAAAAGKiu1AAKxAAAAAQBEAAAACgACAAAAJAAFACUAAQBJAEIAAQBDAAAAHQABAAEAAAAFKrQAA7AAAAABAEQAAAAGAAEAAAAnAAEASgBGAAEAQwAAACIAAgACAAAABiortQADsQAAAAEARAAAAAoAAgAAACoABQArAAEASwBCAAEAQwAAAB0AAQABAAAABSq0AASwAAAAAQBEAAAABgABAAAALQABAEwARgABAEMAAAAiAAIAAgAAAAYqK7UABLEAAAABAEQAAAAKAAIAAAAwAAUAMQABAE0AQgABAEMAAAAdAAEAAQAAAAUqtAAFsAAAAAEARAAAAAYAAQAAADMAAQBOAEYAAQBDAAAAIgACAAIAAAAGKiu1AAWxAAAAAQBEAAAACgACAAAANgAFADcAAQBPAEIAAQBDAAAAHQABAAEAAAAFKrQABrAAAAABAEQAAAAGAAEAAAA5AAEAUABGAAEAQwAAACIAAgACAAAABiortQAGsQAAAAEARAAAAAoAAgAAADwABQA9AAEAUQBCAAEAQwAAAB0AAQABAAAABSq0AAewAAAAAQBEAAAABgABAAAAPwABAFIARgABAEMAAAAiAAIAAgAAAAYqK7UAB7EAAAABAEQAAAAKAAIAAABCAAUAQwABAFMAQgABAEMAAAAdAAEAAQAAAAUqtAAIsAAAAAEARAAAAAYAAQAAAEUAAQBUAEYAAQBDAAAAIgACAAIAAAAGKiu1AAixAAAAAQBEAAAACgACAAAASAAFAEkAAQBVAEIAAQBDAAAAHQABAAEAAAAFKrQACbAAAAABAEQAAAAGAAEAAABLAAEAVgBGAAEAQwAAACIAAgACAAAABiortQAJsQAAAAEARAAAAAoAAgAAAE4ABQBPAAEAVwBCAAEAQwAAAB0AAQABAAAABSq0AAqwAAAAAQBEAAAABgABAAAAUQABAFgARgABAEMAAAAiAAIAAgAAAAYqK7UACrEAAAABAEQAAAAKAAIAAABUAAUAVQABAFkAWgABAEMAAAAdAAEAAQAAAAUqtAALsAAAAAEARAAAAAYAAQAAAFcAAQBbAFwAAQBDAAAAIgACAAIAAAAGKiu1AAuxAAAAAQBEAAAACgACAAAAWgAFAFsAAQBdAEIAAQBDAAAAHQABAAEAAAAFKrQADLAAAAABAEQAAAAGAAEAAABdAAEAXgBGAAEAQwAAACIAAgACAAAABiortQAMsQAAAAEARAAAAAoAAgAAAGAABQBhAAEAXwBgAAEAQwAAAJgAAgABAAAATCq3AA0qEg61AAEqEg61AAIqEg61AAMqEg61AAQqEg61AAUqEg61AAYqEg61AAcqEg61AAgqEg61AAkqEg61AAoqAbUACyoSDrUADLEAAAABAEQAAAA6AA4AAABjAAQADgAKAA8AEAAQABYAEQAcABIAIgATACgAFAAuABUANAAWADoAFwBAABgARQAZAEsAZAAJAGEAYgABAEMAAABkAAIABQAAACMSDk0quAAPTi0rtgAQOgQZBLYAEZkADRkEBLYAEk2n//EssAAAAAIARAAAABoABgAAAGcAAwBoAAgAaQAPAGoAFwBrACEAbQBjAAAADwAC/gAPBwBkBwBlBwBmEQABAGcAYAACAEMAAAL+AAQADQAAAaa7ABNZtwAUTCq0AAESFbYAFk0sOgUZBb42BgM2BxUHFQaiACsZBRUHMjoIGQgSF7YAFk4tvgSkABArLQMyLQQyuQAYAwBXhAcBp//UKxIZKrQAA7kAGAMAVyortQALKisSGrkAGwIAwAActQAFKisSHbkAGwIAwAActQAGKisSHrkAGwIAwAActQAHKisSH7kAGwIAwAActQAIKisSILkAGwIAwAActQAJKisSIbkAGwIAwAActQAKKrQACMcAHysSHyq0AAK5ABgDAFcqKxIfuQAbAgDAABy1AAgBOgYBOggqtAADtgAiOgcqtAAJxwBruAAjOgkZCb42CgM2CxULFQqiADIZCRULMjoMGQcZDLYAJLYAJZkAGBkMtgAkOgYrEiAZBrkAGAMAV6cACYQLAaf/zSsSILkAGwIAxwAOKxIgEia5ABgDAFcqKxIguQAbAgDAABy1AAkqtAAKxwBAKrQABBInEii2ACk6CBIqOgkZCRkIuAArOgoZCjoFKxIhGQW5ABgDAFenAAU6CiorEiG5ABsCAMAAHLUACiortgAttQAMsQABAXEBiQGMACwAAgBEAAAApgApAAAAfwAIAIIAEgCEACsAhQAzAIYAOQCHAEYAhABMAIoAWQCLAF4AjABtAI0AfACOAIsAjwCaAJAAqQCRALgAkgC/AJMAzACUANsAlgDhAJcA6gCYAPEAmQEMAJoBGQCbASAAnAErAJ0BLgCZATQAoAE/AKEBSgCjAVkApQFgAKYBbQCnAXEAqQF6AKoBfgCsAYkArgGMAK0BjgCvAZ0AsQGlALIAYwAAAJIADP8AHQAIBwBoBwBpBwBqAAAHAGoBAQAA/wAoAAgHAGgHAGkHAGoHAGoABwBqAQEAAP8ABQADBwBoBwBpBwBqAAD7AI7/ACIADAcAaAcAaQcAagAAAAcAZAcAZAcAZAcAawEBAAAv+AAFFQ7/ADIACgcAaAcAaQcAagAAAAcAZAcAZAcAZAcAZAABBwBsAfoADgBtAAAABAABACwAAgBuAAAAAgBvADIAAAAKAAEAMAAuADFAGA==</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <xsl:if test="$Start/root/AllParams">
+                    <AllParams>
+                        <xsl:value-of select="$Start/root/AllParams"/>
+                    </AllParams>
+                </xsl:if>
+                <xsl:if test="$Start/root/xff">
+                    <xff>
+                        <xsl:value-of select="$Start/root/xff"/>
+                    </xff>
+                </xsl:if>
+                <xsl:if test="$Start/root/ua">
+                    <ua>
+                        <xsl:value-of select="$Start/root/ua"/>
+                    </ua>
+                </xsl:if>
+                <ua_os_v>
+                    <xsl:value-of select="substring-before(substring-after($Start/root/ua, &quot;(&quot;), &quot;)&quot;)"/>
+                </ua_os_v>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ReplaceTrackLink">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:description>substring-after($UseParsedData/root/offer_click_tl, "?")</pd:description>
+        <pd:x>311</pd:x>
+        <pd:y>145</pd:y>
+        <config>
+            <fileName>Validate_ReplaceTrackLinkReplaceTrackLink</fileName>
+            <packageName>Level2Server.Validate_ReplaceTrackLink</packageName>
+            <fullsource>package Level2Server.Validate_ReplaceTrackLink;
+import java.util.*;
+import java.io.*;
+import java.util.Map;
+public class Validate_ReplaceTrackLinkReplaceTrackLink{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected String TrackLinkFromDB = "";
+	protected String offer_id = "";
+	protected Object ParamMapObj = null;
+	protected String UnixTime = "";
+	protected String ClickID = "";
+	protected String n_id = "";
+	protected String datetime = "";
+	protected String RelacedUrl = "";
+	protected Object ParamMapObj_Replaced = null;
+	protected String MapStr = "";
+	public String getTrackLinkFromDB() {
+		return TrackLinkFromDB;
+	}
+	public void setTrackLinkFromDB(String val) {
+		TrackLinkFromDB = val;
+	}
+	public String getoffer_id() {
+		return offer_id;
+	}
+	public void setoffer_id(String val) {
+		offer_id = val;
+	}
+	public Object getParamMapObj() {
+		return ParamMapObj;
+	}
+	public void setParamMapObj(Object val) {
+		ParamMapObj = val;
+	}
+	public String getUnixTime() {
+		return UnixTime;
+	}
+	public void setUnixTime(String val) {
+		UnixTime = val;
+	}
+	public String getClickID() {
+		return ClickID;
+	}
+	public void setClickID(String val) {
+		ClickID = val;
+	}
+	public String getn_id() {
+		return n_id;
+	}
+	public void setn_id(String val) {
+		n_id = val;
+	}
+	public String getdatetime() {
+		return datetime;
+	}
+	public void setdatetime(String val) {
+		datetime = val;
+	}
+	public String getRelacedUrl() {
+		return RelacedUrl;
+	}
+	public void setRelacedUrl(String val) {
+		RelacedUrl = val;
+	}
+	public Object getParamMapObj_Replaced() {
+		return ParamMapObj_Replaced;
+	}
+	public void setParamMapObj_Replaced(Object val) {
+		ParamMapObj_Replaced = val;
+	}
+	public String getMapStr() {
+		return MapStr;
+	}
+	public void setMapStr(String val) {
+		MapStr = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public Validate_ReplaceTrackLinkReplaceTrackLink() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : String TrackLinkFromDB
+	In  : String offer_id
+	In  : Object ParamMapObj
+	In  : String UnixTime
+	In  : String ClickID
+	In  : String n_id
+	In  : String datetime
+	Out : String RelacedUrl
+	Out : String ClickID
+	Out : Object ParamMapObj_Replaced
+	Out : String MapStr
+* Available Variables: DO NOT MODIFY *****/
+		String[] AllParams_array;
+		RelacedUrl = TrackLinkFromDB;
+		AllParams_array = TrackLinkFromDB.split("\\$\\{");
+		// System.out.println("Arrays.toString(AllParams_array) : \t"+Arrays.toString(AllParams_array)+"\n \n TrackLinkFromDB : \t"+
+		// TrackLinkFromDB);
+		List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+		for (String param_i : AllParams_array) {
+			try {
+				param_i = param_i.substring(0, param_i.indexOf("}"));
+				list.add(param_i);
+			} catch (Exception e) {
+				continue;
+			}
+		}
+	//	System.out.println("param list in TrackLinkFromDB toString() : \t "
+//				+ list.toString());
+		@SuppressWarnings("unchecked")
+		HashMap&lt;String, String&gt; ParamMap = (HashMap&lt;String, String&gt;) ParamMapObj;
+		ParamMap.put("ts", UnixTime);
+		ParamMap.put("clickid", ClickID);
+		ParamMap.put("offer_id", offer_id);
+		ParamMap.put("n_id", n_id);
+
+		for (String str : list) {
+			try {
+				String w = ""+ParamMap.get(str);
+				if (w == null || w.equals("null") || w.contains("${") || w.equals("$" + str))
+					RelacedUrl = RelacedUrl.replace("${" + str + "}", "");
+				else
+					RelacedUrl = RelacedUrl.replace("${" + str + "}", w);
+			} catch (Exception e) {
+				RelacedUrl = RelacedUrl.replace("${" + str + "}", ""); 
+				continue;
+			}
+		}
+		ParamMapObj_Replaced = ParamMap;
+		MapStr = ParamMap.toString();
+		System.out.println("datetime : "+datetime+ " \n UnixTime : "+ UnixTime +  " \n ReplacedUrl :  " + RelacedUrl
+			//	+ " \n ParamMapObj_Replaced : \t " + ParamMapObj_Replaced
+				+ " \n MapStr : " + MapStr);
+
+	}
+}
+</fullsource>
+            <outputData>
+                <row>
+                    <fieldName>RelacedUrl</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ClickID</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ParamMapObj_Replaced</fieldName>
+                    <fieldType>ObjectReference</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>MapStr</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </outputData>
+            <inputData>
+                <row>
+                    <fieldName>TrackLinkFromDB</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>offer_id</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ParamMapObj</fieldName>
+                    <fieldType>ObjectReference</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>UnixTime</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>ClickID</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>n_id</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>datetime</fieldName>
+                    <fieldType>string</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </inputData>
+            <byteCode>
+                <class>
+                    <name>Validate_ReplaceTrackLinkReplaceTrackLink</name>
+                    <byteCode>yv66vgAAADQAuwkAMgBoCQAyAGkJADIAagkAMgBrCQAyAGwJADIAbQkAMgBuCQAyAG8JADIAcAkAMgBxCgAzAHIIAHMIAHQKAB8AdQcAdgoADwByCAB3CgAfAHgKAB8AeQsAegB7BwB8BwB9CAB+CgAWAH8IAIAIADYIADsLAHoAgQsAggCDCwCCAIQHAIUHAIYKACAAcgoAIACHCgAWAIgKACAAiQgAigoAHwCLCACMCgAfAI0IAI4KAB8AjwoAFgCJCQCQAJEIAJIIAJMIAJQIAJUKAJYAlwcAmAcAmQEAD1RyYWNrTGlua0Zyb21EQgEAEkxqYXZhL2xhbmcvU3RyaW5nOwEACG9mZmVyX2lkAQALUGFyYW1NYXBPYmoBABJMamF2YS9sYW5nL09iamVjdDsBAAhVbml4VGltZQEAB0NsaWNrSUQBAARuX2lkAQAIZGF0ZXRpbWUBAApSZWxhY2VkVXJsAQAUUGFyYW1NYXBPYmpfUmVwbGFjZWQBAAZNYXBTdHIBABJnZXRUcmFja0xpbmtGcm9tREIBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBABJzZXRUcmFja0xpbmtGcm9tREIBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAAtnZXRvZmZlcl9pZAEAC3NldG9mZmVyX2lkAQAOZ2V0UGFyYW1NYXBPYmoBABQoKUxqYXZhL2xhbmcvT2JqZWN0OwEADnNldFBhcmFtTWFwT2JqAQAVKExqYXZhL2xhbmcvT2JqZWN0OylWAQALZ2V0VW5peFRpbWUBAAtzZXRVbml4VGltZQEACmdldENsaWNrSUQBAApzZXRDbGlja0lEAQAHZ2V0bl9pZAEAB3NldG5faWQBAAtnZXRkYXRldGltZQEAC3NldGRhdGV0aW1lAQANZ2V0UmVsYWNlZFVybAEADXNldFJlbGFjZWRVcmwBABdnZXRQYXJhbU1hcE9ial9SZXBsYWNlZAEAF3NldFBhcmFtTWFwT2JqX1JlcGxhY2VkAQAJZ2V0TWFwU3RyAQAJc2V0TWFwU3RyAQAGPGluaXQ+AQADKClWAQAGaW52b2tlAQANU3RhY2tNYXBUYWJsZQcAmAcAmgcAmwcAhQcAfAcAfQcAnAEACkV4Y2VwdGlvbnMBAApTb3VyY2VGaWxlAQAuVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGlua1JlcGxhY2VUcmFja0xpbmsuamF2YQwANAA1DAA2ADUMADcAOAwAOQA1DAA6ADUMADsANQwAPAA1DAA9ADUMAD4AOAwAPwA1DABaAFsBAAABAARcJFx7DACdAJ4BABNqYXZhL3V0aWwvQXJyYXlMaXN0AQABfQwAnwCgDAChAKIHAJsMAKMApAEAE2phdmEvbGFuZy9FeGNlcHRpb24BABFqYXZhL3V0aWwvSGFzaE1hcAEAAnRzDAClAKYBAAdjbGlja2lkDACnAKgHAJwMAKkAqgwAqwBJAQAQamF2YS9sYW5nL1N0cmluZwEAF2phdmEvbGFuZy9TdHJpbmdCdWlsZGVyDACsAK0MAK4ArwwAsABBAQAEbnVsbAwAsQCkAQACJHsMALIAswEAASQMALQAtQcAtgwAtwC4AQALZGF0ZXRpbWUgOiABAA4gCiBVbml4VGltZSA6IAEAEiAKIFJlcGxhY2VkVXJsIDogIAEADCAKIE1hcFN0ciA6IAcAuQwAugBFAQBQTGV2ZWwyU2VydmVyL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmsvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGlua1JlcGxhY2VUcmFja0xpbmsBABBqYXZhL2xhbmcvT2JqZWN0AQATW0xqYXZhL2xhbmcvU3RyaW5nOwEADmphdmEvdXRpbC9MaXN0AQASamF2YS91dGlsL0l0ZXJhdG9yAQAFc3BsaXQBACcoTGphdmEvbGFuZy9TdHJpbmc7KVtMamF2YS9sYW5nL1N0cmluZzsBAAdpbmRleE9mAQAVKExqYXZhL2xhbmcvU3RyaW5nOylJAQAJc3Vic3RyaW5nAQAWKElJKUxqYXZhL2xhbmcvU3RyaW5nOwEAA2FkZAEAFShMamF2YS9sYW5nL09iamVjdDspWgEAA3B1dAEAOChMamF2YS9sYW5nL09iamVjdDtMamF2YS9sYW5nL09iamVjdDspTGphdmEvbGFuZy9PYmplY3Q7AQAIaXRlcmF0b3IBABYoKUxqYXZhL3V0aWwvSXRlcmF0b3I7AQAHaGFzTmV4dAEAAygpWgEABG5leHQBAAZhcHBlbmQBAC0oTGphdmEvbGFuZy9TdHJpbmc7KUxq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</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <xsl:if test="$Select_TrackLink_BaseOnOffer_id/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[1]/value or $huajiao_linkswitch/root/offer_link">
+                    <TrackLinkFromDB>
+                        <xsl:value-of select="concat(&#xA;$Select_TrackLink_BaseOnOffer_id/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[1]/value,&#xA;$huajiao_linkswitch/root/offer_link&#xA;)"/>
+                    </TrackLinkFromDB>
+                </xsl:if>
+                <offer_id>
+                    <xsl:value-of select="$Get_offer_id_n_id/root/offer_id"/>
+                </offer_id>
+                <xsl:if test="$GenerateAllParams/javaCodeActivityOutput/ParamMapObj">
+                    <ParamMapObj>
+                        <xsl:value-of select="$GenerateAllParams/javaCodeActivityOutput/ParamMapObj"/>
+                    </ParamMapObj>
+                </xsl:if>
+                <xsl:if test="$Get_offer_id_n_id/root/UnixTime">
+                    <UnixTime>
+                        <xsl:value-of select="$Get_offer_id_n_id/root/UnixTime"/>
+                    </UnixTime>
+                </xsl:if>
+                <ClickID>
+                    <xsl:value-of select="concat($Get_offer_id_n_id/root/offer_id,&quot;c&quot;,$Get_offer_id_n_id/root/n_id,&quot;_&quot;,$GenerateAllParams/javaCodeActivityOutput/cid,&quot;_&quot;,$Get_offer_id_n_id/root/UnixTime)"/>
+                </ClickID>
+                <n_id>
+                    <xsl:value-of select="$Get_offer_id_n_id/root/n_id"/>
+                </n_id>
+                <xsl:if test="$TimeStamp/root/ts">
+                    <datetime>
+                        <xsl:value-of select="$TimeStamp/root/ts"/>
+                    </datetime>
+                </xsl:if>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Check_campaign_Status">
+        <pd:type>com.tibco.plugin.jdbc.JDBCGeneralActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCGeneralActivity</pd:resourceType>
+        <pd:x>190</pd:x>
+        <pd:y>276</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <maxRows>100</maxRows>
+            <jdbcSharedConfig>/Level3Server/MySql.sharedjdbc</jdbcSharedConfig>
+        </config>
+        <pd:inputBindings>
+            <jdbcGeneralActivityInput>
+                <statement>
+                    <xsl:value-of select="concat('select campaign_status,backup_campaign_id,campaign_id,campaign_rm,campaign_pl  from campaign where offer_id=',$GenerateAllParams/javaCodeActivityOutput/offer_id,&quot; and n_id=&quot;,$GenerateAllParams/javaCodeActivityOutput/n_id)"/>
+                </statement>
+            </jdbcGeneralActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Get_offer_id_n_id">
+        <pd:type>com.tibco.pe.core.GetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.getSharedVariable</pd:resourceType>
+        <pd:x>183</pd:x>
+        <pd:y>35</pd:y>
+        <config>
+            <variableConfig>/Level2Server/offer_id_n_id_etc.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Set_offer_id_n_id">
+        <pd:type>com.tibco.pe.core.SetSharedVariableActivity</pd:type>
+        <pd:resourceType>ae.activities.setSharedVariable</pd:resourceType>
+        <pd:x>180</pd:x>
+        <pd:y>150</pd:y>
+        <config>
+            <variableConfig>/Level2Server/offer_id_n_id_etc.jobsharedvariable</variableConfig>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:if test="$GenerateAllParams/javaCodeActivityOutput/offer_id">
+                    <offer_id>
+                        <xsl:value-of select="$GenerateAllParams/javaCodeActivityOutput/offer_id"/>
+                    </offer_id>
+                </xsl:if>
+                <xsl:if test="$GenerateAllParams/javaCodeActivityOutput/n_id">
+                    <n_id>
+                        <xsl:value-of select="$GenerateAllParams/javaCodeActivityOutput/n_id"/>
+                    </n_id>
+                </xsl:if>
+                <UnixTime>
+                    <xsl:value-of select="tib:timestamp()"/>
+                </UnixTime>
+                <realUsed_campaign_id>
+                    <xsl:value-of select="$Check_campaign_Status/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[3]/value"/>
+                </realUsed_campaign_id>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Select_TrackLink_BaseOnOffer_id">
+        <pd:type>com.tibco.plugin.jdbc.JDBCGeneralActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCGeneralActivity</pd:resourceType>
+        <pd:x>308</pd:x>
+        <pd:y>274</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <maxRows>100</maxRows>
+            <jdbcSharedConfig>/Level3Server/MySql.sharedjdbc</jdbcSharedConfig>
+        </config>
+        <pd:inputBindings>
+            <jdbcGeneralActivityInput>
+                <statement>
+                    <xsl:value-of select="concat('select offer_click_tl from offer where offer_id=',$Get_offer_id_n_id/root/offer_id)"/>
+                </statement>
+            </jdbcGeneralActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="SelfPost">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>599</pd:x>
+        <pd:y>138</pd:y>
+        <config>
+            <processName>/Level3Server/SelfPost.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:if test="$Check_campaign_Status/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[4]/value">
+                    <rm>
+                        <xsl:value-of select="$Check_campaign_Status/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[4]/value"/>
+                    </rm>
+                </xsl:if>
+                <xsl:if test="$Check_campaign_Status/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[5]/value">
+                    <camp_pl>
+                        <xsl:value-of select="$Check_campaign_Status/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[5]/value"/>
+                    </camp_pl>
+                </xsl:if>
+                <xsl:if test="$Get_offer_id_n_id/root/offer_id">
+                    <offer_id>
+                        <xsl:value-of select="$Get_offer_id_n_id/root/offer_id"/>
+                    </offer_id>
+                </xsl:if>
+                <xsl:if test="$Get_offer_id_n_id/root/n_id">
+                    <n_id>
+                        <xsl:value-of select="$Get_offer_id_n_id/root/n_id"/>
+                    </n_id>
+                </xsl:if>
+                <xsl:if test="$Start/root/AllParams">
+                    <allParams>
+                        <xsl:value-of select="$Start/root/AllParams"/>
+                    </allParams>
+                </xsl:if>
+                <xsl:if test="$Check_campaign_Status/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[3]/value">
+                    <camp_id>
+                        <xsl:value-of select="$Check_campaign_Status/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[3]/value"/>
+                    </camp_id>
+                </xsl:if>
+                <xsl:if test="$ReplaceTrackLink/javaCodeActivityOutput/ClickID">
+                    <clickid>
+                        <xsl:value-of select="$ReplaceTrackLink/javaCodeActivityOutput/ClickID"/>
+                    </clickid>
+                </xsl:if>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Group">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>391</pd:x>
+        <pd:y>62</pd:y>
+        <pd:width>115</pd:width>
+        <pd:height>140</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>errorLoop</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+            <pd:indexSlot>index</pd:indexSlot>
+            <pd:errorCondition>$Redis/javaCodeActivityOutput/finished=1 or $index&gt;2</pd:errorCondition>
+            <pd:suspendAfterErrorRetry>false</pd:suspendAfterErrorRetry>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Redis</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Redis</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Redis">
+            <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+            <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+            <pd:x>443</pd:x>
+            <pd:y>130</pd:y>
+            <config>
+                <fileName>Validate_ReplaceTrackLinkRedis</fileName>
+                <packageName>Level2Server.Validate_ReplaceTrackLink</packageName>
+                <fullsource>package Level2Server.Validate_ReplaceTrackLink;
+import java.util.*;
+import java.io.*;
+import redis.clients.jedis.Jedis;     
+@SuppressWarnings("unchecked")
+public class Validate_ReplaceTrackLinkRedis{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected Object MapObj = null;
+	protected String MapStr = "";
+	protected String campaign_id = "";
+	protected String clickid = "";
+	protected String replacedurl = "";
+	protected String ts = "";
+	protected int finished = 0;
+	public Object getMapObj() {
+		return MapObj;
+	}
+	public void setMapObj(Object val) {
+		MapObj = val;
+	}
+	public String getMapStr() {
+		return MapStr;
+	}
+	public void setMapStr(String val) {
+		MapStr = val;
+	}
+	public String getcampaign_id() {
+		return campaign_id;
+	}
+	public void setcampaign_id(String val) {
+		campaign_id = val;
+	}
+	public String getclickid() {
+		return clickid;
+	}
+	public void setclickid(String val) {
+		clickid = val;
+	}
+	public String getreplacedurl() {
+		return replacedurl;
+	}
+	public void setreplacedurl(String val) {
+		replacedurl = val;
+	}
+	public String getts() {
+		return ts;
+	}
+	public void setts(String val) {
+		ts = val;
+	}
+	public int getfinished() {
+		return finished;
+	}
+	public void setfinished(int val) {
+		finished = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public Validate_ReplaceTrackLinkRedis() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : Object MapObj
+	In  : String MapStr
+	In  : String campaign_id
+	In  : String clickid
+	In  : String replacedurl
+	In  : String ts
+	Out : int finished
+* Available Variables: DO NOT MODIFY *****/
+	   String value=ts+"@_@"+MapStr+"@_@"+replacedurl+"\n";
+	  Jedis jedis =  new Jedis("127.0.0.1",6379,100000); 
+	 jedis.auth("!VMD1kult");
+	 jedis.hincrBy("clickCounter", campaign_id, 1);	
+	jedis.hset("clickLogMap",clickid, value); 
+	//jedis.lpush("clickLogList", value); 
+	jedis.lpush("clickLogList_bak", value); 
+	finished=1;
+//	jedis.disconnect();
+
+}
+
+	
+}
+</fullsource>
+                <inputData>
+                    <row>
+                        <fieldName>MapObj</fieldName>
+                        <fieldType>ObjectReference</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>MapStr</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>campaign_id</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>clickid</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>replacedurl</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                    <row>
+                        <fieldName>ts</fieldName>
+                        <fieldType>string</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                </inputData>
+                <outputData>
+                    <row>
+                        <fieldName>finished</fieldName>
+                        <fieldType>int</fieldType>
+                        <fieldRequired>optional</fieldRequired>
+                    </row>
+                </outputData>
+                <byteCode>
+                    <class>
+                        <name>Validate_ReplaceTrackLinkRedis</name>
+                        <byteCode>yv66vgAAADQAbwkAHQBGCQAdAEcJAB0ASAkAHQBJCQAdAEoJAB0ASwkAHQBMCgAeAE0IAE4HAE8KAAoATQoACgBQCABRCABSCgAKAFMHAFQIAFUDAAGGoAoAEABWCABXCgAQAFgIAFkKABAAWggAWwoAEABcCABdBwBeCgAQAF8HAGAHAGEBAAZNYXBPYmoBABJMamF2YS9sYW5nL09iamVjdDsBAAZNYXBTdHIBABJMamF2YS9sYW5nL1N0cmluZzsBAAtjYW1wYWlnbl9pZAEAB2NsaWNraWQBAAtyZXBsYWNlZHVybAEAAnRzAQAIZmluaXNoZWQBAAFJAQAJZ2V0TWFwT2JqAQAUKClMamF2YS9sYW5nL09iamVjdDsBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQAJc2V0TWFwT2JqAQAVKExqYXZhL2xhbmcvT2JqZWN0OylWAQAJZ2V0TWFwU3RyAQAUKClMamF2YS9sYW5nL1N0cmluZzsBAAlzZXRNYXBTdHIBABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBAA5nZXRjYW1wYWlnbl9pZAEADnNldGNhbXBhaWduX2lkAQAKZ2V0Y2xpY2tpZAEACnNldGNsaWNraWQBAA5nZXRyZXBsYWNlZHVybAEADnNldHJlcGxhY2VkdXJsAQAFZ2V0dHMBAAVzZXR0cwEAC2dldGZpbmlzaGVkAQADKClJAQALc2V0ZmluaXNoZWQBAAQoSSlWAQAGPGluaXQ+AQADKClWAQAGaW52b2tlAQAKRXhjZXB0aW9ucwcAYgEAClNvdXJjZUZpbGUBACNWYWxpZGF0ZV9SZXBsYWNlVHJhY2tMaW5rUmVkaXMuamF2YQwAHwAgDAAhACIMACMAIgwAJAAiDAAlACIMACYAIgwAJwAoDAA/AEABAAABABdqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcgwAYwBkAQADQF9AAQABCgwAZQAwAQAZcmVkaXMvY2xpZW50cy9qZWRpcy9KZWRpcwEACTEyNy4wLjAuMQwAPwBmAQAJIVZNRDFrdWx0DABnAGgBAAxjbGlja0NvdW50ZXIMAGkAagEAC2NsaWNrTG9nTWFwDABrAGwBABBjbGlja0xvZ0xpc3RfYmFrAQAQamF2YS9sYW5nL1N0cmluZwwAbQBuAQBFTGV2ZWwyU2VydmVyL1ZhbGlkYXRlX1JlcGxhY2VUcmFja0xpbmsvVmFsaWRhdGVfUmVwbGFjZVRyYWNrTGlua1JlZGlzAQAQamF2YS9sYW5nL09iamVjdAEAE2phdmEvbGFuZy9FeGNlcHRpb24BAAZhcHBlbmQBAC0oTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nQnVpbGRlcjsBAAh0b1N0cmluZwEAFyhMamF2YS9sYW5nL1N0cmluZztJSSlWAQAEYXV0aAEAJihMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmc7AQAHaGluY3JCeQEANyhMamF2YS9sYW5nL1N0cmluZztMamF2YS9sYW5nL1N0cmluZztKKUxqYXZhL2xhbmcvTG9uZzsBAARoc2V0AQBIKExqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvU3RyaW5nO0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0xvbmc7AQAFbHB1c2gBADcoTGphdmEvbGFuZy9TdHJpbmc7W0xqYXZhL2xhbmcvU3RyaW5nOylMamF2YS9sYW5nL0xvbmc7ACEAHQAeAAAABwAEAB8AIAAAAAQAIQAiAAAABAAjACIAAAAEACQAIgAAAAQAJQAiAAAABAAmACIAAAAEACcAKAAAABAAAQApACoAAQArAAAAHQABAAEAAAAFKrQAAbAAAAABACwAAAAGAAEAAAAQAAEALQAuAAEAKwAAACIAAgACAAAABiortQABsQAAAAEALAAAAAoAAgAAABMABQAUAAEALwAwAAEAKwAAAB0AAQABAAAABSq0AAKwAAAAAQAsAAAABgABAAAAFgABADEAMgABACsAAAAiAAIAAgAAAAYqK7UAArEAAAABACwAAAAKAAIAAAAZAAUAGgABADMAMAABACsAAAAdAAEAAQAAAAUqtAADsAAAAAEALAAAAAYAAQAAABwAAQA0ADIAAQArAAAAIgACAAIAAAAGKiu1AAOxAAAAAQAsAAAACgACAAAAHwAFACAAAQA1ADAAAQArAAAAHQABAAEAAAAFKrQABLAAAAABACwAAAAGAAEAAAAiAAEANgAyAAEAKwAAACIAAgACAAAABiortQAEsQAAAAEALAAAAAoAAgAAACUABQAmAAEANwAwAAEAKwAAAB0AAQABAAAABSq0AAWwAAAAAQAsAAAABgABAAAAKAABADgAMgABACsAAAAiAAIAAgAAAAYqK7UABbEAAAABACwAAAAKAAIAAAArAAUALAABADkAMAABACsAAAAdAAEAAQAAAAUqtAAGsAAAAAEALAAAAAYAAQAAAC4AAQA6ADIAAQArAAAAIgACAAIAAAAGKiu1AAaxAAAAAQAsAAAACgACAAAAMQAFADIAAQA7ADwAAQArAAAAHQABAAEAAAAFKrQAB6wAAAABACwAAAAGAAEAAAA0AAEAPQA+AAEAKwAAACIAAgACAAAABiobtQAHsQAAAAEALAAAAAoAAgAAADcABQA4AAEAPwBAAAEAKwAAAGUAAgABAAAALSq3AAgqAbUAASoSCbUAAioSCbUAAyoSCbUABCoSCbUABSoSCbUABioDtQAHsQAAAAEALAAAACYACQAAADoABAAIAAkACQAPAAoAFQALABsADAAhAA0AJwAOACwAOwABAEEAQAACACsAAACmAAYAAwAAAHK7AApZtwALKrQABrYADBINtgAMKrQAArYADBINtgAMKrQABbYADBIOtgAMtgAPTLsAEFkSEREY6xIStwATTSwSFLYAFVcsEhYqtAADCrYAF1csEhgqtAAEK7YAGVcsEhoEvQAbWQMrU7YAHFcqBLUAB7EAAAABACwAAAAiAAgAAABGAC8ARwA+AEgARQBJAFEASgBdAEwAbABNAHEAUABCAAAABAABAEMAAQBEAAAAAgBF</byteCode>
+                    </class>
+                </byteCode>
+            </config>
+            <pd:inputBindings>
+                <javaCodeActivityInput>
+                    <xsl:if test="$ReplaceTrackLink/javaCodeActivityOutput/ParamMapObj_Replaced">
+                        <MapObj>
+                            <xsl:value-of select="$ReplaceTrackLink/javaCodeActivityOutput/ParamMapObj_Replaced"/>
+                        </MapObj>
+                    </xsl:if>
+                    <xsl:if test="$ReplaceTrackLink/javaCodeActivityOutput/MapStr">
+                        <MapStr>
+                            <xsl:value-of select="$ReplaceTrackLink/javaCodeActivityOutput/MapStr"/>
+                        </MapStr>
+                    </xsl:if>
+                    <xsl:if test="$Get_offer_id_n_id/root/realUsed_campaign_id">
+                        <campaign_id>
+                            <xsl:value-of select="$Get_offer_id_n_id/root/realUsed_campaign_id"/>
+                        </campaign_id>
+                    </xsl:if>
+                    <xsl:if test="$ReplaceTrackLink/javaCodeActivityOutput/ClickID">
+                        <clickid>
+                            <xsl:value-of select="$ReplaceTrackLink/javaCodeActivityOutput/ClickID"/>
+                        </clickid>
+                    </xsl:if>
+                    <xsl:if test="$ReplaceTrackLink/javaCodeActivityOutput/RelacedUrl">
+                        <replacedurl>
+                            <xsl:value-of select="$ReplaceTrackLink/javaCodeActivityOutput/RelacedUrl"/>
+                        </replacedurl>
+                    </xsl:if>
+                    <ts>
+                        <xsl:value-of select="$TimeStamp/root/ts"/>
+                    </ts>
+                </javaCodeActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="TimeStamp">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>60</pd:x>
+        <pd:y>160</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="ts" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <ts>
+                    <xsl:value-of select="current-dateTime()"/>
+                </ts>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="huajiao_linkswitch">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>303</pd:x>
+        <pd:y>39</pd:y>
+        <config>
+            <processName>/Level2Server/OfferLinkSwitch.process</processName>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <xsl:if test="$Get_offer_id_n_id/root/offer_id">
+                    <offerid>
+                        <xsl:value-of select="$Get_offer_id_n_id/root/offer_id"/>
+                    </offerid>
+                </xsl:if>
+                <rediskey>
+                    <xsl:value-of select="&quot;22_174_huajiao_link_map&quot;"/>
+                </rediskey>
+                <redisfieldrange>
+                    <xsl:value-of select="5"/>
+                </redisfieldrange>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="SendAlertMail">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>193</pd:x>
+        <pd:y>355</pd:y>
+        <config>
+            <processName>/Level2Server/SendAlertMail.process</processName>
+            <spawn>true</spawn>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <subjectandcontent>
+                    <xsl:value-of select="concat(&#xA;&quot;all parms : &quot;,&#xA;$Start/root/AllParams,&#xA;&quot;&#xA;&quot;,&#xA;&quot;GenAllParmas Activity Output : &quot;,&#xA;tib:render-xml($GenerateAllParams/javaCodeActivityOutput)&#xA;)"/>
+                </subjectandcontent>
+                <subject>
+                    <xsl:value-of select="&quot;win ,,1 is coming&quot;"/>
+                </subject>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>TimeStamp</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Rethrow</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Check_campaign_Status</pd:from>
+        <pd:to>Set_offer_id_n_id</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Set_offer_id_n_id</pd:from>
+        <pd:to>Get_offer_id_n_id</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get_offer_id_n_id</pd:from>
+        <pd:to>Select_TrackLink_BaseOnOffer_id</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GenerateAllParams</pd:from>
+        <pd:to>Check_campaign_Status</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$GenerateAllParams/javaCodeActivityOutput/offer_id &gt;= 0 and 
+$GenerateAllParams/javaCodeActivityOutput/n_id &gt;= 0</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Select_TrackLink_BaseOnOffer_id</pd:from>
+        <pd:to>ReplaceTrackLink</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SelfPost</pd:from>
+        <pd:to>ConcatAllContentsAsResponse</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ReplaceTrackLink</pd:from>
+        <pd:to>Group</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>TimeStamp</pd:from>
+        <pd:to>GenerateAllParams</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Get_offer_id_n_id</pd:from>
+        <pd:to>huajiao_linkswitch</pd:to>
+        <pd:xpathDescription>IfOfferId174NId27</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>contains(",174,", 
+concat(",",$Get_offer_id_n_id/root/offer_id,",")
+)
+and 
+contains(",27,", 
+concat(",",$Get_offer_id_n_id/root/n_id,",")
+)</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>huajiao_linkswitch</pd:from>
+        <pd:to>ReplaceTrackLink</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>SelfPost</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Check_campaign_Status/jdbcGeneralActivityOutput/unknownResultset[1]/row[1]/column[4]/value &lt; 0</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Group</pd:from>
+        <pd:to>ConcatAllContentsAsResponse</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GenerateAllParams</pd:from>
+        <pd:to>SendAlertMail</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendAlertMail</pd:from>
+        <pd:to>ConcatAllContentsAsResponse</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
