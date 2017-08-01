@@ -183,6 +183,14 @@
                 <asciiContent>
                     <xsl:value-of select="'error url'"/>
                 </asciiContent>
+                <Headers>
+                    <StatusLine>
+                        <xsl:value-of select="&quot;HTTP/1.1 302 Moved Temporarily&quot;"/>
+                    </StatusLine>
+                    <Location>
+                        <xsl:value-of select="&quot;http://www.91mobcastle.com&quot;"/>
+                    </Location>
+                </Headers>
             </ResponseActivityInput>
         </pd:inputBindings>
     </pd:activity>
